@@ -13,19 +13,19 @@ default_columns = ['price', 'bedrooms-number', 'area', 'kitchen', 'bathroom-numb
                    'West Flanders Province']
 
 zipcodes = {
-    ("1000", "1299"): "Brussels-Capital Region",
-    ("1300", "1499"): "Walloon Brabant Province",
-    ("1500", "1999"): "Flemish Brabant Province",
-    ("2000", "2999"): "Antwerp Province",
-    ("3000", "3499"): "Flemish Brabant Province",
-    ("3500", "3999"): "Limburg Province",
-    ("4000", "4999"): "Liège Province",
-    ("5000", "5999"): "Namur Province",
-    ("6000", "6599"): "Hainaut Province",
-    ("6600", "6999"): "Luxembourg Province",
-    ("7000", "7999"): "Hainaut Province",
-    ("8000", "8999"): "West Flanders Province",
-    ("9000", "9999"): "East Flanders Province",
+    (1000, 1299): "Brussels-Capital Region",
+    (1300, 1499): "Walloon Brabant Province",
+    (1500, 1999): "Flemish Brabant Province",
+    (2000, 2999): "Antwerp Province",
+    (3000, 3499): "Flemish Brabant Province",
+    (3500, 3999): "Limburg Province",
+    (4000, 4999): "Liège Province",
+    (5000, 5999): "Namur Province",
+    (6000, 6599): "Hainaut Province",
+    (6600, 6999): "Luxembourg Province",
+    (7000, 7999): "Hainaut Province",
+    (8000, 8999): "West Flanders Province",
+    (9000, 9999): "East Flanders Province",
 }
 
 
@@ -94,5 +94,6 @@ def preprocess(data):
     df.replace("", 0)
     df.replace(np.nan, 0)
     df.fillna(0)
+    df = df.drop("price", axis=1)
 
     return predict(np.array(df.values))

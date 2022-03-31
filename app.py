@@ -49,7 +49,7 @@ def predict():
             else:
                 # TODO: convert expected-integers fields into integers ("try int(field)/ except ValueError" method)
                 # try
-                # 
+                # return user_input
                 return preprocessing.cleaning_data.preprocess(user_input)
         else:
             return "Input should be in JSON format. Go to /predict for specific details."
