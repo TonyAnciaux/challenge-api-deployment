@@ -1,4 +1,5 @@
 from flask import Flask, request
+import preprocessing.cleaning_data
 
 app = Flask(__name__)
 
@@ -10,32 +11,29 @@ def home():
     if request.url_root:
         return "alive"
     else:
-        return "on development server"
+        return "Something went wrong."
 
 
 @app.route("/predict", methods=["POST", "GET"])
 def predict():
     if request.method == "GET":
         return """
-        The expected input is a JSON with the following formatting: 
+        The expected input should be in the following JSON format: 
         {
         "data": {
-        "area": int,
-        "property-type": "APARTMENT" | "HOUSE" | "OTHERS",
-        "rooms-number": int,
-        "zip-code": int,
-        "land-area": Optional[int],
-        "garden": Optional[bool],
-        "garden-area": Optional[int],
-        "equipped-kitchen": Optional[bool],
-        "full-address": Optional[str],
-        "swimming-pool": Optional[bool],
-        "furnished": Optional[bool],
-        "open-fire": Optional[bool],
-        "terrace": Optional[bool],
-        "terrace-area": Optional[int],
-        "facades-number": Optional[int],
-        "building-state": Optional["NEW" | "GOOD" | "TO RENOVATE" | "JUST RENOVATED" | "TO REBUILD"]
+        "area": "MANDATORY [int]",
+        "property-type": "MANDATORY ['apartment' | 'bungalow' | 'chalet' | 'duplex' | 'ground-floor' | 'loft' | 
+        'mansion' | 'master-house' | 'mixed-building' | 'penthouse' | 'residence' | 'studio' | 'triplex' | 
+        'villa' ] [str]",
+        "bedrooms-number": "MANDATORY [int]",
+        "zip-code": "MANDATORY [int]",
+        "garden-area": "OPTIONAL - (leave empty if no garden) [int]",
+        "kitchen": "OPTIONAL ['Not equipped' | 'Partially equipped' | 'Fully equipped' | 'Super equipped'] [str]",
+        "balcony": "OPTIONAL [bool]", 
+        "terrace-area": "OPTIONAL - (leave empty if no terrace) [int]",
+        "facades-number": "OPTIONAL [int]",
+        "building-state": "OPTIONAL ['To be renovated' | 'Normal' | 'Excellent' | 'Fully renovated' | 'New'] [str]"
+        "garage": "OPTIONAL [bool]", 
         }
         }
 """
@@ -43,27 +41,31 @@ def predict():
     if request.method == "POST":
         content_type = request.headers.get('Content-Type')
         if content_type == "application/json":
-            json = request.json
-            return json
+            user_input = request.json
+            required_keys = ["area", "property-type", "bedrooms-number", "zip-code"]
+            missing_keys = [k for k, v in user_input.items() if len(v) == 0 and k in required_keys]
+            if missing_keys:
+                return {"Error": f"Missing data in following required field(s): {missing_keys}."}
+            else:
+                # TODO: convert expected-integers fields into integers ("try int(field)/ except ValueError" method)
+                # try
+                # 
+                return preprocessing.cleaning_data.preprocess(user_input)
         else:
-            return "Input should be in JSON format. Go to /predict page to learn more about specifics."
-
-        house_data = {
-            # TODO: Input structure & matching description in GET request.method
-        }
-        missing_fields = {k for k, v in house_data.items() if len(v) == 0}
-        required_field = {
-            # TODO: determine obliged fields
-        }
-        if not missing_fields:
-            try:
-                # TODO: convert fields expected to be integers into integers
-            except ValueError:
-                return {"Error": "Expected numbers for {field_name_here}"}
-        else:
+            return "Input should be in JSON format. Go to /predict for specific details."
 
 
-
+"""
+        # try:
+        # except ValueError:
+        #     return {"Error": "Expected numbers for {field_name_here}"}
+        
+        
+        #     house_data = {
+        #         # TODO: Input structure & matching description in GET request.method
+        #     }
+        # 
+"""
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=5000)
