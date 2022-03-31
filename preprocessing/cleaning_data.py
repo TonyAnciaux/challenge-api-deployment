@@ -3,7 +3,7 @@ import numpy as np
 from predict.prediction import predict
 
 
-default_columns = ['price', 'bedrooms-number', 'area', 'kitchen', 'bathroom-number', 'balcony', 'building-state',
+default_columns = ['bedrooms-number', 'area', 'kitchen', 'bathroom-number', 'balcony', 'building-state',
                    'master-bedroom-area', 'living-room-area', 'cellar', 'facades-number', 'terrace-area',
                    'garden-area', 'garage', 'apartment', 'bungalow', 'chalet', 'cottage', 'duplex',
                    'ground-floor', 'loft', 'mansion', 'master-house', 'mixed-building', 'penthouse', 'residence',
@@ -94,6 +94,5 @@ def preprocess(data):
     df.replace("", 0)
     df.replace(np.nan, 0)
     df.fillna(0)
-    df = df.drop("price", axis=1)
 
     return predict(np.array(df.values))
