@@ -1,4 +1,5 @@
 from flask import Flask, request
+import os
 import preprocessing.cleaning_data
 
 app = Flask(__name__)
@@ -45,18 +46,19 @@ def predict():
             boolean_values = ["balcony", "garage"]
             missing_keys = [k for k, v in user_input["data"].items() if not v and k in required_keys]
             should_be_integers = [k for k, v in user_input["data"].items() if not isinstance(v, int) and k in integer_values]
-            #should_be_booleans = [k for k, v in user_input["data"].items() if not isinstance(v, bool) and k in boolean_values]
+            should_be_booleans = [k for k, v in user_input["data"].items() if not isinstance(v, bool) and k in boolean_values]
             if missing_keys:
                 return {"Error": f"Missing required data in following field(s): {missing_keys}."}
             elif should_be_integers:
                 return {"Error": f"Please enter an integer in following field(s): {should_be_integers}"}
-            #elif should_be_booleans:
-            #    return {"Error": f"Please enter True or False in following field(s): {should_be_booleans}"}
+            elif should_be_booleans:
+                return {"Error": f"Please enter True or False in following field(s): {should_be_booleans}"}
+            elif isinstance(content_type, str):
+                return {"error": "You shouldn't use STRING as a POST request."}
             else:
                 return preprocessing.cleaning_data.preprocess(user_input)
-        else:
-            return "Input should be in JSON format. Go to /predict for specific details."
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

@@ -73,10 +73,14 @@ def preprocess(data):
     # garage
     if data["data"]["garage"]:
         df["garage"] = 1
+    elif not data["data"]["garage"]:
+        df["garage"] = 0
 
     # bacony
     if data["data"]["balcony"]:
         df["balcony"] = 1
+    elif not data["data"]["balcony"]:
+        df["balcony"] = 0
 
     # Building-state cleaning
     if data["data"]["building-state"] == "To be renovated":
