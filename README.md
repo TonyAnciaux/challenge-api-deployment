@@ -2,7 +2,7 @@
 
 ## Description 
 
-Web application used to predict price of real-estate in Belgium based on historical prices. 
+Web application used to predict prices of real-estate in Belgium based on historical data. 
 
 ## Installation 
 
