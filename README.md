@@ -14,13 +14,13 @@ It only needs a valid internet connection and a software that allows for API req
 
 ### Available Routes 
 
-#### Main Access
+#### Main Route
 https://pumpkin-pie-15657.herokuapp.com is the main route of the API. 
 It only takes **["GET"]** request and returns the state of the web-app. 
 - If *"alive"*, the return indicates the web-app is ready for an API request. 
 - If *"Something went wrong."*, the return indicates the web-app is not ready or disfonctionning. 
 
-#### Prediction Access
+#### Prediction Route
 https://pumpkin-pie-15657.herokuapp.com/predict takes **["GET"]** and **["POST"]** requests.
 If **["GET"]**, will return the expected schema of the JSON request. 
 When sending a valid JSON through **["POST"]** request, the web-app will return a prediction price. 
