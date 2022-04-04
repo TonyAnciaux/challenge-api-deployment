@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import os
 import preprocessing.cleaning_data
 
@@ -64,11 +64,11 @@ def predict():
 
             # checks if the previous lists are empty, otherwise returns corresponding error message
             if missing_keys:
-                return {"Error": f"Missing required data in following field(s): {missing_keys}."}
+                return jsonify({"Error": f"Missing required data in following field(s): {missing_keys}."})
             elif should_be_integers:
-                return {"Error": f"Please enter an integer in following field(s): {should_be_integers}"}
+                return jsonify({"Error": f"Please enter an integer in following field(s): {should_be_integers}"})
             elif should_be_booleans:
-                return {"Error": f"Please enter True or False in following field(s): {should_be_booleans}"}
+                return jsonify({"Error": f"Please enter True or False in following field(s): {should_be_booleans}"})
             else:
                 # sends the user_input to the preprocessing function
                 return preprocessing.cleaning_data.preprocess(user_input)
