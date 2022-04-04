@@ -17,7 +17,7 @@ def home():
 def predict():
     if request.method == "GET":
         return """
-        The expected input should be in the following JSON format: 
+        The expected input should be in the following JSON schema: 
         {
         "data": {
         "area": int,
@@ -53,8 +53,6 @@ def predict():
                 return {"Error": f"Please enter an integer in following field(s): {should_be_integers}"}
             elif should_be_booleans:
                 return {"Error": f"Please enter True or False in following field(s): {should_be_booleans}"}
-            elif isinstance(content_type, str):
-                return {"error": "You shouldn't use STRING as a POST request."}
             else:
                 return preprocessing.cleaning_data.preprocess(user_input)
 
