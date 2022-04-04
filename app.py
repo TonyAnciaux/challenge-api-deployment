@@ -7,6 +7,9 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def home():
+    """
+    base function that indicates if the web-app is responding or not
+    """
     if request.url_root:
         return "alive"
     else:
@@ -15,6 +18,12 @@ def home():
 
 @app.route("/predict", methods=["POST", "GET"])
 def predict():
+    """
+    Core function of the web-app
+    :GET: will return expected JSON schema for the ["POST"] method
+    :POST: will check the user input before sending it to the preprocessing function
+    """
+
     if request.method == "GET":
         return """
         The expected input should be in the following JSON schema: 
@@ -37,16 +46,23 @@ def predict():
         }
         """
 
+    # checks if the input is in JSON
     if request.method == "POST":
         content_type = request.headers.get('Content-Type')
         if content_type == "application/json":
             user_input = request.json
+
+            # creates lists based on requirements and fills them with missing/wrong typed keys
             required_keys = ["area", "property-type", "bedrooms-number", "zip-code"]
             integer_values = ["area", "bedrooms-number", "zip-code", "garden-area", "terrace_area", "facades_number"]
             boolean_values = ["balcony", "garage"]
             missing_keys = [k for k, v in user_input["data"].items() if not v and k in required_keys]
-            should_be_integers = [k for k, v in user_input["data"].items() if not isinstance(v, int) and k in integer_values]
-            should_be_booleans = [k for k, v in user_input["data"].items() if not isinstance(v, bool) and k in boolean_values]
+            should_be_integers = [k for k, v in user_input["data"].items() if not isinstance(v, int)
+                                  and k in integer_values]
+            should_be_booleans = [k for k, v in user_input["data"].items() if not isinstance(v, bool)
+                                  and k in boolean_values]
+
+            # checks if the previous lists are empty, otherwise returns corresponding error message
             if missing_keys:
                 return {"Error": f"Missing required data in following field(s): {missing_keys}."}
             elif should_be_integers:
@@ -54,6 +70,7 @@ def predict():
             elif should_be_booleans:
                 return {"Error": f"Please enter True or False in following field(s): {should_be_booleans}"}
             else:
+                # sends the user_input to the preprocessing function
                 return preprocessing.cleaning_data.preprocess(user_input)
 
 

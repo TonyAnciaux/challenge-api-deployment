@@ -1,5 +1,3 @@
-import cerberus
-
 schema = {
         "area": {"type": "integer", "min": 10, "required": True},
         "property-type": {"type": "string", "allowed": ['apartment', 'bungalow', 'chalet', 'duplex', 'ground-floor',

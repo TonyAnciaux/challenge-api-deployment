@@ -32,20 +32,20 @@ zipcodes = {
 def preprocess(data):
     """
     Take a JSON formatted file as input
-    :return: numpy array ready for prediction model
+    :return: numpy array passed to the predict function
     """
 
-    # Creating an empty DataFrame that matches the model
+    # Creates a zero-filled DataFrame that matches the model
     zeros = np.zeros(shape=(1, len(default_columns)))
     df = pd.DataFrame(zeros, columns=default_columns)
 
-    # Untransformed data
+    # Passes the fields that don't require transformation to the DataFrame
     df["bedrooms-number"] = data["data"]["bedrooms-number"]
     df["area"] = data["data"]["area"]
     df["terrace-area"] = data["data"]["terrace-area"]
     df["facades-number"] = data["data"]["facades-number"]
 
-    # kitchen data cleaning
+    # orders kitchen equipment
     if data["data"]["kitchen"] == "Not equipped":
         df["kitchen"] = 0
     elif data["data"]["kitchen"] == "Partially equipped":
@@ -55,11 +55,11 @@ def preprocess(data):
     elif data["data"]["kitchen"] == "Super equipped":
         df["kitchen"] = 3
 
-    # property type cleaning
+    # inputs a "1" in the column with the correct property type name
     property_type = data["data"]["property-type"]
     df[property_type] = 1
 
-    # garden cleaning
+    # inputs the area from the user or a "0" if no garden
     if data["data"]["garden-area"]:
         df["garden-area"] = data["data"]["garden-area"]
     else:
@@ -70,13 +70,13 @@ def preprocess(data):
         if k[0] < data["data"]["zip-code"] < k[1]:
             df[v] = 1
 
-    # garage
+    # garage cleaning
     if data["data"]["garage"]:
         df["garage"] = 1
     elif not data["data"]["garage"]:
         df["garage"] = 0
 
-    # bacony
+    # bacony cleaning
     if data["data"]["balcony"]:
         df["balcony"] = 1
     elif not data["data"]["balcony"]:
@@ -94,7 +94,7 @@ def preprocess(data):
     elif data["data"]["building-state"] == "New":
         df["building-state"] = 4
 
-    # Fill-in empty values
+    # using different methods to fill-in empty values
     df.replace("", 0)
     df.replace(np.nan, 0)
     df.fillna(0)
